@@ -9,55 +9,48 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as SuckerRouteImport } from './routes/sucker'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as DiscoverCategoryRouteImport } from './routes/discover.$category'
 
-const SuckerRoute = SuckerRouteImport.update({
-  id: '/sucker',
-  path: '/sucker',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const DiscoverCategoryRoute = DiscoverCategoryRouteImport.update({
+  id: '/discover/$category',
+  path: '/discover/$category',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/sucker': typeof SuckerRoute
+  '/discover/$category': typeof DiscoverCategoryRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/sucker': typeof SuckerRoute
+  '/discover/$category': typeof DiscoverCategoryRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
-  '/sucker': typeof SuckerRoute
+  '/discover/$category': typeof DiscoverCategoryRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/sucker'
+  fullPaths: '/' | '/discover/$category'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/sucker'
-  id: '__root__' | '/' | '/sucker'
+  to: '/' | '/discover/$category'
+  id: '__root__' | '/' | '/discover/$category'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
-  SuckerRoute: typeof SuckerRoute
+  DiscoverCategoryRoute: typeof DiscoverCategoryRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/sucker': {
-      id: '/sucker'
-      path: '/sucker'
-      fullPath: '/sucker'
-      preLoaderRoute: typeof SuckerRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/': {
       id: '/'
       path: '/'
@@ -65,12 +58,19 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/discover/$category': {
+      id: '/discover/$category'
+      path: '/discover/$category'
+      fullPath: '/discover/$category'
+      preLoaderRoute: typeof DiscoverCategoryRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
-  SuckerRoute: SuckerRoute,
+  DiscoverCategoryRoute: DiscoverCategoryRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
