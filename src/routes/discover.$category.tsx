@@ -143,43 +143,54 @@ function RouteComponent() {
 				projects?.map((project) => {
 					return (
 						<div
-							className="m-3 grid grid-cols-2 bg-mauve-900"
+							className="m-3 flex py-4 items-center bg-mauve-900 hover:brightness-110 w-full"
 							key={project.slug}
 						>
 							<Link to={`/project/${project.slug}`}>
 								<div>
-									{project.icon_url ? (
-										<img
-											className="m-3 border border-bs-gray-800 size-16 object-cover"
-											src={project.icon_url}
-										/>
-									) : (
-										<svg
-											className="m-3 border border-bs-gray-800 size-16"
-											stroke-linecap="round"
-											stroke-linejoin="round"
-											viewBox="0 0 103.4 103.4"
-										>
-											<path
-												fill="none"
-												stroke="#9a9a9a"
-												stroke-width="5"
-												d="M51.7 92.5V51.7L16.4 31.3l35.3 20.4L87 31.3 51.7 11 16.4 31.3v40.8l35.3 20.4L87 72V31.3L51.7 11"
-											></path>
-										</svg>
-									)}
-									<h4>
-										{project.title}{" "}
-										<small>
-											{" "}
-											by{" "}
-											<Link to={`/author/${project.author}`}>
-												{project.author}
-											</Link>
-										</small>
-									</h4>
+									<div className="p-3">
+										{project.icon_url ? (
+											<img
+												className="border border-bs-gray-800 size-16"
+												src={project.icon_url}
+												alt=""
+											/>
+										) : (
+											<svg
+												className="border border-bs-gray-800 size-16"
+												stroke-linecap="round"
+												stroke-linejoin="round"
+												viewBox="0 0 103.4 103.4"
+											>
+												<path
+													fill="none"
+													stroke="#9a9a9a"
+													stroke-width="5"
+													d="M51.7 92.5V51.7L16.4 31.3l35.3 20.4L87 31.3 51.7 11 16.4 31.3v40.8l35.3 20.4L87 72V31.3L51.7 11"
+												></path>
+											</svg>
+										)}
+									</div>
+									<div className="ml-3">
+										<div className="inline-flex">
+											<p className="font-bold hover:underline">
+												{project.title}{" "}
+											</p>
+											<small className="text-gray-400">
+												by{" "}
+												<Link
+													className="hover:underline"
+													to={`/author/${project.author}`}
+												>
+													{project.author}
+												</Link>
+											</small>
+										</div>
+										<p className="text-sm self-baseline-last text-gray-400">
+											{project.description}
+										</p>
+									</div>
 								</div>
-								<p className="self-baseline-last">{project.description}</p>
 							</Link>
 						</div>
 					);
