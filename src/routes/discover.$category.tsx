@@ -1,16 +1,203 @@
-import { createFileRoute } from "@tanstack/react-router";
-import { use, useState } from "react";
+import { createFileRoute, Link } from "@tanstack/react-router";
+import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import {
+	Select,
+	SelectContent,
+	SelectGroup,
+	SelectItem,
+	SelectTrigger,
+	SelectValue,
+} from "@/components/ui/select";
+import { Spinner } from "@/components/ui/spinner";
 
 export const Route = createFileRoute("/discover/$category")({
+	validateSearch: (search) => ({
+		search: (search.search as string) || undefined,
+		page: Number(search.page) || undefined,
+		limit: Number(search.limit) || undefined,
+		sort: (search.sort as string) || "relevance",
+	}),
 	component: RouteComponent,
 });
 
-const PROJECTS_PER_PAGE = 10;
+function RouteComponent() {
+	const { search, page, limit, sort } = Route.useSearch();
+	const navigate = Route.useNavigate();
+
+	const { category } = Route.useParams();
+	const [projects, setProjects] = useState<Project[]>();
+	const [loading, setLoading] = useState<boolean>(true);
+
+	const sortItems = [
+		{ label: "Relevance", value: "relevance" },
+		{ label: "Downloads", value: "downloads" },
+		{ label: "Followers", value: "follows" },
+		{ label: "Date published", value: "newest" },
+		{ label: "Date updated", value: "updated" },
+	];
+
+	useEffect(() => {
+		const controller = new AbortController();
+		async function updateProjects() {
+			try {
+				setLoading(true);
+				const projects = await getProjects(
+					category,
+					page || 1,
+					limit || 20,
+					search,
+					sort,
+					controller.signal,
+				);
+				setProjects(projects);
+				setLoading(false);
+			} catch (error) {
+				if (error instanceof DOMException && error.name === "AbortError")
+					return;
+				setLoading(false);
+				throw error;
+			}
+		}
+
+		updateProjects();
+		return () => {
+			controller.abort();
+		};
+	}, [category, search, page, limit, sort]);
+
+	return (
+		<div>
+			<Link to="/">Home</Link>
+			<h1>Discover {category}</h1>
+			<Input
+				defaultValue={search}
+				autoFocus
+				onChange={(e) => {
+					navigate({
+						search: (previous) => ({
+							...previous,
+							search: e.target.value === "" ? undefined : e.target.value,
+							page: undefined,
+						}),
+						replace: true,
+					});
+				}}
+			/>
+			<Select
+				value={sort}
+				onValueChange={(e) => {
+					navigate({
+						search: (previous) => ({
+							...previous,
+							sort: e as string,
+						}),
+						replace: true,
+					});
+				}}
+			>
+				<SelectTrigger className="w-full max-w-48">
+					Sort by: <SelectValue />
+				</SelectTrigger>
+				<SelectContent>
+					<SelectGroup>
+						{sortItems.map((item) => (
+							<SelectItem key={item.value} value={item.value}>
+								{item.label}
+							</SelectItem>
+						))}
+					</SelectGroup>
+				</SelectContent>
+			</Select>
+			<Button
+				disabled={page ? page <= 1 : true}
+				onClick={() => {
+					navigate({
+						search: (previous) => ({
+							...previous,
+							page: previous.page ? previous.page - 1 : 2,
+						}),
+						replace: true,
+					});
+				}}
+			>
+				Previous Page: {page ? Math.max(page - 1, 0) : 0}
+			</Button>
+			<Button
+				onClick={() => {
+					navigate({
+						search: (previous) => ({
+							...previous,
+							page: previous.page ? previous.page + 1 : 2,
+						}),
+						replace: true,
+					});
+				}}
+			>
+				Next Page: {page ? page + 1 : 2}
+			</Button>
+			{loading ? (
+				<Spinner />
+			) : (
+				projects?.map((project) => {
+					return (
+						<div className="m-3 grid grid-cols-2" key={project.slug}>
+							<Link to={`/project/${project.slug}`}>
+								<div>
+									<img src={project.icon_url} width="5%" height="5%" />
+									<h4>
+										{project.title}{" "}
+										<small>
+											{" "}
+											by{" "}
+											<Link to={`/author/${project.author}`}>
+												{project.author}
+											</Link>
+										</small>
+									</h4>
+								</div>
+								<p className="self-baseline-last">{project.description}</p>
+							</Link>
+						</div>
+					);
+				})
+			)}
+		</div>
+	);
+}
+
+async function getProjects(
+	category: string,
+	page: number,
+	limit: number,
+	query?: string,
+	sort?: string,
+	signal?: AbortSignal,
+): Promise<Project[]> {
+	const offset = limit * (page - 1);
+	const facets = `[["project_type:${category}"]]`;
+
+	if (!query) query = "";
+
+	const response = await fetch(
+		`https://api.modrinth.com/v2/search
+		?query=${query}
+		&facets=${facets}
+		&offset=${offset}
+		&index=${sort}
+		&limit=${limit}`,
+		{ signal },
+	);
+	const rsp = (await response.json()) as Response;
+	return rsp.hits;
+}
 
 interface Response {
 	hits: Project[];
+	offset: number;
+	limit: number;
+	total_hits: number;
 }
 
 interface Project {
@@ -21,67 +208,18 @@ interface Project {
 	client_side?: string;
 	server_side?: string;
 	project_type: string;
-	icon_url: string;
-	color: number;
+	downloads: number;
+	icon_url?: string;
+	color?: number;
 	project_id: string;
 	author: string;
-}
-
-function RouteComponent() {
-	const { category } = Route.useParams();
-	const [projects, setProjects] = useState<Project[]>();
-	const [page, setPage] = useState<number>(1);
-	const [input, setInput] = useState<string>();
-
-	function updatePage(page: number) {
-		setPage(page);
-		updateProjects();
-	}
-
-	async function updateProjects() {
-		const projects = await getProjects(category, page - 1, input);
-		setProjects(projects);
-	}
-
-	return (
-		<div>
-			<Input
-				onChange={(e) => {
-					setInput(e.target.value);
-					updateProjects();
-				}}
-			/>
-			<Button
-				onClick={() => {
-					if (page > 1) updatePage(page - 1);
-				}}
-			>
-				Previous Page: {Math.max(page - 1, 0)}
-			</Button>
-			<Button
-				onClick={() => {
-					updatePage(page + 1);
-				}}
-			>
-				Next Page: {page + 1}
-			</Button>
-			{projects?.map((project) => {
-				return <p key={project.slug}>{project.title}</p>;
-			})}
-		</div>
-	);
-}
-
-async function getProjects(
-	category: string,
-	page: number,
-	query?: string,
-): Promise<Project[]> {
-	const offset = PROJECTS_PER_PAGE * page;
-	const facets = `[["project_type:${category}"]]`;
-	const response = await fetch(
-		`https://api.modrinth.com/v2/search?query=${query}&facets=${facets}&offset=${offset}&limit=${PROJECTS_PER_PAGE}`,
-	);
-	const rsp = (await response.json()) as Response;
-	return rsp.hits;
+	display_categories: string[];
+	versions: string[];
+	follows: number;
+	date_created: string;
+	date_modified: string;
+	latest_version?: string;
+	license: string;
+	gallery: string[];
+	featured_gallery: string;
 }
