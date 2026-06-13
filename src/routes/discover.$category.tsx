@@ -148,12 +148,26 @@ function RouteComponent() {
 						>
 							<Link to={`/project/${project.slug}`}>
 								<div>
-									<img
-										className="m-3 border-1 border-bs-gray-800"
-										src={project.icon_url}
-										width="8%"
-										height="8%"
-									/>
+									{project.icon_url ? (
+										<img
+											className="m-3 border border-bs-gray-800 size-16 object-cover"
+											src={project.icon_url}
+										/>
+									) : (
+										<svg
+											className="m-3 border border-bs-gray-800 size-16"
+											stroke-linecap="round"
+											stroke-linejoin="round"
+											viewBox="0 0 103.4 103.4"
+										>
+											<path
+												fill="none"
+												stroke="#9a9a9a"
+												stroke-width="5"
+												d="M51.7 92.5V51.7L16.4 31.3l35.3 20.4L87 31.3 51.7 11 16.4 31.3v40.8l35.3 20.4L87 72V31.3L51.7 11"
+											></path>
+										</svg>
+									)}
 									<h4>
 										{project.title}{" "}
 										<small>
