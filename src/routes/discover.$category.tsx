@@ -142,10 +142,18 @@ function RouteComponent() {
 			) : (
 				projects?.map((project) => {
 					return (
-						<div className="m-3 grid grid-cols-2" key={project.slug}>
+						<div
+							className="m-3 grid grid-cols-2 bg-mauve-900"
+							key={project.slug}
+						>
 							<Link to={`/project/${project.slug}`}>
 								<div>
-									<img src={project.icon_url} width="5%" height="5%" />
+									<img
+										className="m-3 border-1 border-bs-gray-800"
+										src={project.icon_url}
+										width="8%"
+										height="8%"
+									/>
 									<h4>
 										{project.title}{" "}
 										<small>
