@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as ProjectSlugRouteImport } from './routes/project.$slug'
 import { Route as DiscoverCategoryRouteImport } from './routes/discover.$category'
+import { Route as AuthorNameRouteImport } from './routes/author.$name'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -28,33 +29,47 @@ const DiscoverCategoryRoute = DiscoverCategoryRouteImport.update({
   path: '/discover/$category',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthorNameRoute = AuthorNameRouteImport.update({
+  id: '/author/$name',
+  path: '/author/$name',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/author/$name': typeof AuthorNameRoute
   '/discover/$category': typeof DiscoverCategoryRoute
   '/project/$slug': typeof ProjectSlugRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/author/$name': typeof AuthorNameRoute
   '/discover/$category': typeof DiscoverCategoryRoute
   '/project/$slug': typeof ProjectSlugRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/author/$name': typeof AuthorNameRoute
   '/discover/$category': typeof DiscoverCategoryRoute
   '/project/$slug': typeof ProjectSlugRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/discover/$category' | '/project/$slug'
+  fullPaths: '/' | '/author/$name' | '/discover/$category' | '/project/$slug'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/discover/$category' | '/project/$slug'
-  id: '__root__' | '/' | '/discover/$category' | '/project/$slug'
+  to: '/' | '/author/$name' | '/discover/$category' | '/project/$slug'
+  id:
+    | '__root__'
+    | '/'
+    | '/author/$name'
+    | '/discover/$category'
+    | '/project/$slug'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AuthorNameRoute: typeof AuthorNameRoute
   DiscoverCategoryRoute: typeof DiscoverCategoryRoute
   ProjectSlugRoute: typeof ProjectSlugRoute
 }
@@ -82,11 +97,19 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DiscoverCategoryRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/author/$name': {
+      id: '/author/$name'
+      path: '/author/$name'
+      fullPath: '/author/$name'
+      preLoaderRoute: typeof AuthorNameRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AuthorNameRoute: AuthorNameRoute,
   DiscoverCategoryRoute: DiscoverCategoryRoute,
   ProjectSlugRoute: ProjectSlugRoute,
 }

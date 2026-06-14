@@ -1,5 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
+import { Box } from "lucide-react";
 import { useEffect, useState } from "react";
+import { ProjectCard } from "@/components/project-card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -11,6 +13,7 @@ import {
 	SelectValue,
 } from "@/components/ui/select";
 import { Spinner } from "@/components/ui/spinner";
+import type { Project, Response } from "@/lib/types";
 
 export const Route = createFileRoute("/discover/$category")({
 	validateSearch: (search) => ({
@@ -68,12 +71,11 @@ function RouteComponent() {
 	}, [category, search, page, limit, sort]);
 
 	return (
-		<div>
+		<div className="container mx-auto py-3">
 			<Link to="/">Home</Link>
 			<h1>Discover {category}</h1>
 			<Input
 				defaultValue={search}
-				autoFocus
 				onChange={(e) => {
 					navigate({
 						search: (previous) => ({
@@ -97,7 +99,7 @@ function RouteComponent() {
 					});
 				}}
 			>
-				<SelectTrigger className="w-full max-w-48">
+				<SelectTrigger>
 					Sort by: <SelectValue />
 				</SelectTrigger>
 				<SelectContent>
@@ -140,61 +142,11 @@ function RouteComponent() {
 			{loading ? (
 				<Spinner />
 			) : (
-				projects?.map((project) => {
-					return (
-						<div
-							className="m-3 flex py-4 items-center bg-mauve-900 hover:brightness-110 w-full"
-							key={project.slug}
-						>
-							<Link to={`/project/${project.slug}`}>
-								<div>
-									<div className="p-3">
-										{project.icon_url ? (
-											<img
-												className="border border-bs-gray-800 size-16"
-												src={project.icon_url}
-												alt=""
-											/>
-										) : (
-											<svg
-												className="border border-bs-gray-800 size-16"
-												stroke-linecap="round"
-												stroke-linejoin="round"
-												viewBox="0 0 103.4 103.4"
-											>
-												<path
-													fill="none"
-													stroke="#9a9a9a"
-													stroke-width="5"
-													d="M51.7 92.5V51.7L16.4 31.3l35.3 20.4L87 31.3 51.7 11 16.4 31.3v40.8l35.3 20.4L87 72V31.3L51.7 11"
-												></path>
-											</svg>
-										)}
-									</div>
-									<div className="ml-3">
-										<div className="inline-flex">
-											<p className="font-bold hover:underline">
-												{project.title}{" "}
-											</p>
-											<small className="text-gray-400">
-												by{" "}
-												<Link
-													className="hover:underline"
-													to={`/author/${project.author}`}
-												>
-													{project.author}
-												</Link>
-											</small>
-										</div>
-										<p className="text-sm self-baseline-last text-gray-400">
-											{project.description}
-										</p>
-									</div>
-								</div>
-							</Link>
-						</div>
-					);
-				})
+				<div className="flex flex-col gap-1">
+					{projects?.map((project) => {
+						return ProjectCard(project);
+					})}
+				</div>
 			)}
 		</div>
 	);
@@ -224,35 +176,4 @@ async function getProjects(
 	);
 	const rsp = (await response.json()) as Response;
 	return rsp.hits;
-}
-
-interface Response {
-	hits: Project[];
-	offset: number;
-	limit: number;
-	total_hits: number;
-}
-
-interface Project {
-	slug: string;
-	title?: string;
-	description?: string;
-	categories?: string[];
-	client_side?: string;
-	server_side?: string;
-	project_type: string;
-	downloads: number;
-	icon_url?: string;
-	color?: number;
-	project_id: string;
-	author: string;
-	display_categories: string[];
-	versions: string[];
-	follows: number;
-	date_created: string;
-	date_modified: string;
-	latest_version?: string;
-	license: string;
-	gallery: string[];
-	featured_gallery: string;
 }
