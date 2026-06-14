@@ -71,9 +71,7 @@ function RouteComponent() {
 			<Link to="/">Home</Link>
 			<h1>Discover {category}</h1>
 			<div className="flex grid-flow-col grid-rows-2 justify-start ">
-				<CategorySelector
-					currentCategory={category === "plugin" ? "mod" : category}
-				/>
+				<CategorySelector currentCategory={category} />
 				<div>
 					<Input
 						defaultValue={search}
