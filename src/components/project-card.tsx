@@ -11,7 +11,11 @@ export function ProjectCard(project: Project) {
 			className="flex flex-col gap-3 p-4 bg-card hover:brightness-110 group"
 		>
 			<div className="size-20 *:size-20 border">
-				{project.icon_url ? <img src={project.icon_url} alt="" /> : <Box />}
+				{project.icon_url ? (
+					<img src={project.icon_url} alt={project.title} />
+				) : (
+					<Box />
+				)}
 			</div>
 			<div className="inline-flex items-baseline gap-2">
 				<p className="font-bold hover:underline group-hover:underline">
