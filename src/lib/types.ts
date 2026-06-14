@@ -10,9 +10,9 @@ export interface Project {
 	title?: string;
 	description?: string;
 	categories?: string[];
-	client_side?: string;
-	server_side?: string;
-	project_type: string;
+	client_side?: "required" | "optional" | "unsupported" | "unknown";
+	server_side?: "required" | "optional" | "unsupported" | "unknown";
+	project_type: "mod" | "modpack" | "resourcepack" | "shader";
 	downloads: number;
 	icon_url?: string;
 	color?: number;
@@ -27,4 +27,24 @@ export interface Project {
 	license: string;
 	gallery: string[];
 	featured_gallery: string;
+}
+
+export interface Category {
+	icon: string;
+	name: string;
+	project_type: string;
+	header: string;
+}
+
+export interface Loader {
+	icon: string;
+	name: string;
+	supported_project_types: string[];
+}
+
+export interface GameVersion {
+	version: string;
+	version_type: "release" | "snapshot" | "alpha" | "beta";
+	date: string;
+	major: boolean;
 }
