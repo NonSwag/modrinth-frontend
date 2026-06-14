@@ -23,7 +23,6 @@
     "@tanstack/react-router": "^1.170.15",
     "@tanstack/react-router-ssr-query": "^1.167.1",
     "@tanstack/react-start": "^1.168.25",
-    "@tanstack/router-plugin": "^1.168.18",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "lucide-react": "^1.17.0",
@@ -38,8 +37,6 @@
   "devDependencies": {
     "@biomejs/biome": "2.4.16",
     "@rolldown/plugin-babel": "^0.2.3",
-    "@tailwindcss/typography": "0.5.20",
-    "@tanstack/router-cli": "^1.167.17",
     "@types/node": "^25.9.2",
     "@types/react": "^19.2.17",
     "@types/react-dom": "^19.2.3",

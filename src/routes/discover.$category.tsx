@@ -1,5 +1,4 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { Box } from "lucide-react";
 import { useEffect, useState } from "react";
 import { ProjectCard } from "@/components/project-card";
 import { Button } from "@/components/ui/button";
