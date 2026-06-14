@@ -31,8 +31,6 @@ export interface ThemeProviderProps extends React.PropsWithChildren {
 	themes?: string[] | undefined;
 	/** Forced theme name for the current page */
 	forcedTheme?: string | undefined;
-	/** Whether to switch between dark and light themes based on prefers-color-scheme */
-	enableSystem?: boolean | undefined;
 	/** Disable all CSS transitions when switching themes */
 	disableTransitionOnChange?: boolean | undefined;
 	/** Whether to indicate to browsers which color scheme is used (dark or light) for built-in UI like inputs and buttons */
@@ -70,11 +68,10 @@ const defaultThemes = ["light", "dark"];
 const Theme = ({
 	forcedTheme,
 	disableTransitionOnChange = false,
-	enableSystem = true,
 	enableColorScheme = true,
 	storageKey = "theme",
 	themes = defaultThemes,
-	defaultTheme = enableSystem ? "system" : "light",
+	defaultTheme = "system",
 	attribute = "class",
 	value,
 	children,
@@ -92,7 +89,7 @@ const Theme = ({
 		if (!resolved) return;
 
 		// If theme is system, resolve it before setting theme
-		if (theme === "system" && enableSystem) {
+		if (theme === "system") {
 			resolved = getSystemTheme();
 		}
 
@@ -139,7 +136,7 @@ const Theme = ({
 			// Save to storage
 			try {
 				localStorage.setItem(storageKey, newTheme);
-			} catch (e) {
+			} catch (_e) {
 				// Unsupported
 			}
 		},
@@ -149,9 +146,7 @@ const Theme = ({
 	// biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
 	const handleMediaQuery = React.useCallback(
 		(e: MediaQueryListEvent | MediaQueryList) => {
-			const resolved = getSystemTheme(e);
-
-			if (theme === "system" && enableSystem && !forcedTheme) {
+			if (theme === "system" && !forcedTheme) {
 				applyTheme("system");
 			}
 		},
@@ -197,9 +192,9 @@ const Theme = ({
 			theme,
 			setTheme,
 			forcedTheme,
-			themes: enableSystem ? [...themes, "system"] : themes,
+			themes: [...themes, "system"],
 		}),
-		[theme, setTheme, forcedTheme, enableSystem, themes],
+		[theme, setTheme, forcedTheme, themes],
 	);
 
 	return (
@@ -209,7 +204,6 @@ const Theme = ({
 					forcedTheme,
 					storageKey,
 					attribute,
-					enableSystem,
 					enableColorScheme,
 					defaultTheme,
 					value,
@@ -227,7 +221,6 @@ const ThemeScript = React.memo(
 		forcedTheme,
 		storageKey,
 		attribute,
-		enableSystem,
 		enableColorScheme,
 		defaultTheme,
 		value,
@@ -241,7 +234,6 @@ const ThemeScript = React.memo(
 			forcedTheme,
 			themes,
 			value,
-			enableSystem,
 			enableColorScheme,
 		]).slice(1, -1);
 
