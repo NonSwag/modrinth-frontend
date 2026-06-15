@@ -1,6 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { useCategory } from "@/components/category-context";
 import { CategorySelector } from "@/components/category-selector";
 import { ProjectCard } from "@/components/project-card";
 import { Button } from "@/components/ui/button";
@@ -23,19 +22,18 @@ export const Route = createFileRoute("/discover/$category")({
 		page: Number(search.page) || undefined,
 		limit: Number(search.limit) || undefined,
 		sort: (search.sort as string) || "relevance",
+		categories: (search.categories as string[]) || [],
 	}),
 	component: RouteComponent,
 });
 
 function RouteComponent() {
-	const { search, page, limit, sort } = Route.useSearch();
+	const { search, page, limit, sort, categories } = Route.useSearch();
 	const navigate = Route.useNavigate();
 
 	const { category } = Route.useParams();
 	const [projects, setProjects] = useState<Project[]>();
 	const [loading, setLoading] = useState<boolean>(true);
-
-	const { categories } = useCategory();
 
 	const sortItems = [
 		{ label: "Relevance", value: "relevance" },
@@ -67,12 +65,15 @@ function RouteComponent() {
 	}, [category, search, page, limit, sort, categories]);
 
 	return (
-		<div className="container mx-auto py-3">
+		<div className="container mx-auto py-3 w-[80%]">
 			<Link to="/">Home</Link>
 			<h1>Discover {category}</h1>
-			<div className="flex grid-flow-col grid-rows-2 justify-start ">
-				<CategorySelector currentCategory={category} />
-				<div>
+			<div className="flex justify-start">
+				<CategorySelector
+					currentCategory={category}
+					categories={categories || []}
+				/>
+				<div className="w-full">
 					<Input
 						defaultValue={search}
 						placeholder={`Search ${category}s...`}

@@ -1,17 +1,19 @@
-import { ArrowUp, ChevronDown, ChevronUp } from "lucide-react";
+import { useNavigate } from "@tanstack/react-router";
+import { ChevronDown, ChevronUp } from "lucide-react";
 import { useState } from "react";
 import { fetchCategories } from "@/lib/routes";
 import type { Category } from "@/lib/types";
-import { useCategory } from "./category-context";
 import { Button } from "./ui/button";
 import { ToggleGroup, ToggleGroupItem } from "./ui/toggle-group";
 
 export function CategorySelector({
 	currentCategory,
+	categories,
 }: {
 	currentCategory: string;
+	categories: string[];
 }) {
-	const { categories, setCategories } = useCategory();
+	const navigate = useNavigate();
 	const [showCategories, setShowCategories] = useState<boolean>(true);
 	const [availableCategories, setAvailableCategories] = useState<Category[]>();
 	async function updateCategories() {
@@ -21,19 +23,28 @@ export function CategorySelector({
 	if (!availableCategories) updateCategories();
 
 	return (
-		<div className="p-1 mx-1 border h-full ">
+		<div className="p-1 mx-1 border h-full w-[15%]">
 			<Button
-				className="mx-auto justify-start"
+				className={"w-full justify-between"}
 				onClick={() => {
 					setShowCategories(!showCategories);
 				}}
 			>
-				{showCategories ? <ChevronUp /> : <ChevronDown />} Categories
+				<span>Categories</span>
+				<span>{showCategories ? <ChevronUp /> : <ChevronDown />}</span>
 			</Button>
 			<ToggleGroup
 				multiple
-				className="flex flex-col m-2"
-				onValueChange={(value) => setCategories(value)}
+				className="flex flex-col m-2 w-auto"
+				onValueChange={(value) => {
+					navigate({
+						search: (previous) => ({
+							...previous,
+							categories: value,
+						}),
+						replace: true,
+					});
+				}}
 				value={categories}
 				hidden={!showCategories}
 			>

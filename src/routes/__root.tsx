@@ -1,5 +1,4 @@
 import { createRootRoute, HeadContent, Scripts } from "@tanstack/react-router";
-import { CategoryProvider } from "@/components/category-context";
 import { ThemeProvider } from "@/components/theme-provider";
 import appCss from "../styles.css?url";
 
@@ -34,9 +33,7 @@ function RootDocument({ children }: { children: React.ReactNode }) {
 				<HeadContent />
 			</head>
 			<body>
-				<ThemeProvider>
-					<CategoryProvider> {children}</CategoryProvider>
-				</ThemeProvider>
+				<ThemeProvider>{children}</ThemeProvider>
 				<Scripts />
 			</body>
 		</html>
