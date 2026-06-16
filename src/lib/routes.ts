@@ -34,7 +34,6 @@ export async function fetchProjects(
 	});
 	const filter = categoryFilter.length > 0 ? `,${categoryFilter}` : "";
 	const facets = `[["project_type:${category}"]${filter}]`;
-	console.log(facets);
 
 	if (!query) query = "";
 
