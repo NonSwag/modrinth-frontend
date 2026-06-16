@@ -1,9 +1,16 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
+import { Search } from "lucide-react";
 import { useEffect, useState } from "react";
 import { CategorySelector } from "@/components/category-selector";
+import { Header } from "@/components/header";
 import { ProjectCard } from "@/components/project-card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import {
+	InputGroup,
+	InputGroupAddon,
+	InputGroupInput,
+} from "@/components/ui/input-group";
 import {
 	Select,
 	SelectContent,
@@ -65,29 +72,34 @@ function RouteComponent() {
 	}, [category, search, page, limit, sort, categories]);
 
 	return (
-		<div className="container mx-auto py-3 w-[80%]">
-			<Link to="/">Home</Link>
-			<h1>Discover {category}</h1>
+		<div className="container mx-auto py-3 w-[65%]">
+			<Header />
 			<div className="flex justify-start">
 				<CategorySelector
 					currentCategory={category}
 					categories={categories || []}
 				/>
 				<div className="w-full">
-					<Input
-						defaultValue={search}
-						placeholder={`Search ${category}s...`}
-						onChange={(e) => {
-							navigate({
-								search: (previous) => ({
-									...previous,
-									search: e.target.value === "" ? undefined : e.target.value,
-									page: undefined,
-								}),
-								replace: true,
-							});
-						}}
-					/>
+					<InputGroup className="mb-1">
+						<InputGroupAddon>
+							<Search />
+						</InputGroupAddon>
+						<InputGroupInput
+							defaultValue={search}
+							placeholder={`Search ${category}s...`}
+							className="border-none"
+							onChange={(e) => {
+								navigate({
+									search: (previous) => ({
+										...previous,
+										search: e.target.value === "" ? undefined : e.target.value,
+										page: undefined,
+									}),
+									replace: true,
+								});
+							}}
+						/>
+					</InputGroup>
 					<Select
 						value={sort}
 						onValueChange={(e) => {

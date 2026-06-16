@@ -13,6 +13,7 @@ export interface Project {
 	client_side?: "required" | "optional" | "unsupported" | "unknown";
 	server_side?: "required" | "optional" | "unsupported" | "unknown";
 	project_type: "mod" | "modpack" | "resourcepack" | "shader";
+	organization?: string;
 	downloads: number;
 	icon_url?: string;
 	color?: number;

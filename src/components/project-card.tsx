@@ -67,10 +67,16 @@ export function ProjectCard(project: Project) {
 								by{" "}
 								<Link
 									className="hover:underline"
-									to={`/author/$name`}
-									params={{ name: project.author }}
+									to={
+										project.organization ? `/organization/$name` : `/user/$name`
+									}
+									params={{
+										name: project.organization
+											? project.organization
+											: project.author,
+									}}
 								>
-									{project.author}
+									{project.organization ? project.organization : project.author}
 								</Link>
 							</small>
 						</div>
@@ -79,7 +85,7 @@ export function ProjectCard(project: Project) {
 								<Download /> {nf1.format(project.downloads)}
 							</span>
 							<span title={`${nfLong.format(project.follows)} followers`}>
-								<Heart /> {project.follows}
+								<Heart /> {nf1.format(project.follows)}
 							</span>
 							<span title={lastUpdated(project.date_modified)}>
 								<History /> {formatDate(project.date_modified)}

@@ -23,7 +23,7 @@ export function CategorySelector({
 	if (!availableCategories) updateCategories();
 
 	return (
-		<div className="p-1 mx-1 border h-full w-[15%]">
+		<div className="p-1 mx-1 border h-full w-70">
 			<Button
 				className={"w-full justify-between"}
 				onClick={() => {
