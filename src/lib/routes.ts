@@ -2,26 +2,22 @@ import type { Category, GameVersion, Loader, Project, Response } from "./types";
 
 export async function fetchCategories(): Promise<Category[]> {
 	const response = await fetch("https://api.modrinth.com/v2/tag/category");
-	const categories = (await response.json()) as Category[];
-	return categories;
+	return (await response.json()) as Category[];
 }
 
 export async function fetchLoaders(): Promise<Loader[]> {
 	const response = await fetch("https://api.modrinth.com/v2/tag/loader");
-	const loaders = (await response.json()) as Loader[];
-	return loaders;
+	return (await response.json()) as Loader[];
 }
 
 export async function fetchGameVersions(): Promise<GameVersion[]> {
 	const response = await fetch("https://api.modrinth.com/v2/tag/game_version");
-	const versions = (await response.json()) as GameVersion[];
-	return versions;
+	return (await response.json()) as GameVersion[];
 }
 
 export async function fetchProjectTypes(): Promise<string[]> {
 	const response = await fetch("https://api.modrinth.com/v2/tag/project_type");
-	const types = (await response.json()) as string[];
-	return types;
+	return (await response.json()) as string[];
 }
 
 export async function fetchProjects(
@@ -50,6 +46,5 @@ export async function fetchProjects(
 		&index=${sort}
 		&limit=${limit}`,
 	);
-	const rsp = (await response.json()) as Response;
-	return rsp.hits;
+	return ((await response.json()) as Response).hits;
 }
