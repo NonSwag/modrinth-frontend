@@ -24,15 +24,16 @@ export async function fetchProjects(
 	category: string,
 	page: number,
 	limit: number,
-	categories: string[],
+	sort: string,
+	categories?: string[],
 	query?: string,
-	sort?: string,
 ): Promise<Project[]> {
 	const offset = limit * (page - 1);
-	const categoryFilter = categories.map((category) => {
+	const categoryFilter = categories?.map((category) => {
 		return `["categories:${category}"]`;
 	});
-	const filter = categoryFilter.length > 0 ? `,${categoryFilter}` : "";
+	const filter =
+		categories && categories.length > 0 ? `,${categoryFilter}` : "";
 	const facets = `[["project_type:${category}"]${filter}]`;
 
 	if (!query) query = "";

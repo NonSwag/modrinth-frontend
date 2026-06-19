@@ -1,36 +1,28 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute } from "@tanstack/react-router";
 import { Search } from "lucide-react";
 import { useEffect, useState } from "react";
 import { CategorySelector } from "@/components/category-selector";
 import { Header } from "@/components/header";
 import { ProjectCard } from "@/components/project-card";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+import { SearchOptions } from "@/components/search-options";
 import {
 	InputGroup,
 	InputGroupAddon,
 	InputGroupInput,
 } from "@/components/ui/input-group";
-import {
-	Select,
-	SelectContent,
-	SelectGroup,
-	SelectItem,
-	SelectTrigger,
-	SelectValue,
-} from "@/components/ui/select";
 import { Spinner } from "@/components/ui/spinner";
 import { fetchProjects } from "@/lib/routes";
 import type { Project } from "@/lib/types";
 
 export const Route = createFileRoute("/discover/$category")({
-	validateSearch: (search) => ({
-		search: (search.search as string) || undefined,
-		page: Number(search.page) || undefined,
-		limit: Number(search.limit) || undefined,
-		sort: (search.sort as string) || "relevance",
-		categories: (search.categories as string[]) || [],
-	}),
+	validateSearch: (search) =>
+		search as {
+			search?: string;
+			page?: number;
+			limit?: number;
+			sort?: string;
+			categories?: string[];
+		},
 	component: RouteComponent,
 });
 
@@ -42,14 +34,6 @@ function RouteComponent() {
 	const [projects, setProjects] = useState<Project[]>();
 	const [loading, setLoading] = useState<boolean>(true);
 
-	const sortItems = [
-		{ label: "Relevance", value: "relevance" },
-		{ label: "Downloads", value: "downloads" },
-		{ label: "Followers", value: "follows" },
-		{ label: "Date published", value: "newest" },
-		{ label: "Date updated", value: "updated" },
-	];
-
 	useEffect(() => {
 		async function updateProjects() {
 			try {
@@ -58,9 +42,9 @@ function RouteComponent() {
 					category,
 					page || 1,
 					limit || 20,
+					sort || "relevance",
 					categories,
 					search,
-					sort,
 				);
 				setProjects(projects);
 			} finally {
@@ -72,7 +56,7 @@ function RouteComponent() {
 	}, [category, search, page, limit, sort, categories]);
 
 	return (
-		<div className="container mx-auto py-3 w-[65%]">
+		<div className="container mx-auto py-3 pb-10 w-[65%]">
 			<Header />
 			<div className="flex justify-start">
 				<CategorySelector
@@ -80,7 +64,7 @@ function RouteComponent() {
 					categories={categories || []}
 				/>
 				<div className="w-full">
-					<InputGroup className="mb-1">
+					<InputGroup>
 						<InputGroupAddon>
 							<Search />
 						</InputGroupAddon>
@@ -100,58 +84,7 @@ function RouteComponent() {
 							}}
 						/>
 					</InputGroup>
-					<Select
-						value={sort}
-						onValueChange={(e) => {
-							navigate({
-								search: (previous) => ({
-									...previous,
-									sort: e as string,
-								}),
-								replace: true,
-							});
-						}}
-					>
-						<SelectTrigger>
-							Sort by: <SelectValue />
-						</SelectTrigger>
-						<SelectContent>
-							<SelectGroup>
-								{sortItems.map((item) => (
-									<SelectItem key={item.value} value={item.value}>
-										{item.label}
-									</SelectItem>
-								))}
-							</SelectGroup>
-						</SelectContent>
-					</Select>
-					<Button
-						disabled={page ? page <= 1 : true}
-						onClick={() => {
-							navigate({
-								search: (previous) => ({
-									...previous,
-									page: previous.page ? previous.page - 1 : 2,
-								}),
-								replace: true,
-							});
-						}}
-					>
-						Previous Page: {page ? Math.max(page - 1, 0) : 0}
-					</Button>
-					<Button
-						onClick={() => {
-							navigate({
-								search: (previous) => ({
-									...previous,
-									page: previous.page ? previous.page + 1 : 2,
-								}),
-								replace: true,
-							});
-						}}
-					>
-						Next Page: {page ? page + 1 : 2}
-					</Button>
+					<SearchOptions />
 					{loading ? (
 						<Spinner />
 					) : (
@@ -159,6 +92,7 @@ function RouteComponent() {
 							{projects?.map((project) => {
 								return ProjectCard(project);
 							})}
+							<SearchOptions />
 						</div>
 					)}
 				</div>

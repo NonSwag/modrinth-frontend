@@ -26,6 +26,10 @@ export function Header() {
 							className={`${path === page.slug ? "underline" : ""}`}
 							to="/discover/$category"
 							params={{ category: page.slug }}
+							search={(previous) => ({
+								...previous,
+								page: 1,
+							})}
 						>
 							{page.name}
 						</Link>
