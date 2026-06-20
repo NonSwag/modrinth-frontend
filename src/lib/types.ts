@@ -10,8 +10,8 @@ export interface Project {
 	title?: string;
 	description?: string;
 	categories?: string[];
-	client_side?: "required" | "optional" | "unsupported" | "unknown";
-	server_side?: "required" | "optional" | "unsupported" | "unknown";
+	client_side: "required" | "optional" | "unsupported" | "unknown";
+	server_side: "required" | "optional" | "unsupported" | "unknown";
 	project_type: "mod" | "modpack" | "resourcepack" | "shader";
 	organization?: string;
 	downloads: number;

@@ -1,5 +1,14 @@
 import { Link } from "@tanstack/react-router";
-import { Box, Download, Heart, History } from "lucide-react";
+import {
+	Box,
+	Download,
+	Globe,
+	HardDrive,
+	Heart,
+	History,
+	Monitor,
+	Server,
+} from "lucide-react";
 import type { Project } from "@/lib/types";
 
 const rtf1 = new Intl.RelativeTimeFormat("en", { style: "long" });
@@ -41,7 +50,7 @@ function formatDate(dateString: string): string {
 	return "just now";
 }
 
-export function ProjectCard(project: Project) {
+export function ProjectCard(project: Project, category: string) {
 	return (
 		<Link
 			key={project.slug}
@@ -95,10 +104,11 @@ export function ProjectCard(project: Project) {
 					<p className="text-sm text-muted-foreground py-2">
 						{project.description}
 					</p>
-					<div className="flex flex-row flex-wrap gap-2">
-						{project.categories?.map((category) => {
+					<div className="flex flex-row flex-wrap gap-1 *:px-1">
+						{side(project, category)}
+						{project.display_categories?.map((category) => {
 							return (
-								<span key={category} className="border p-0.5">
+								<span key={category} className="border p-0.5 text-sm">
 									{category}
 								</span>
 							);
@@ -108,4 +118,57 @@ export function ProjectCard(project: Project) {
 			</div>
 		</Link>
 	);
+}
+
+function side(project: Project, category: string) {
+	if (category !== "mod" && category !== "modpack") return undefined;
+	const side = formatSide(project.client_side, project.server_side);
+	const icon = sideIcon(project.client_side, project.server_side, "size-4");
+	return (
+		side &&
+		icon && (
+			<span className="border p-0.5 text-sm bg-accent flex gap-1 items-center text-muted-foreground">
+				{icon} {side}
+			</span>
+		)
+	);
+}
+
+function formatSide(
+	client_side: "required" | "optional" | "unsupported" | "unknown",
+	server_side: "required" | "optional" | "unsupported" | "unknown",
+) {
+	if (client_side === "required" && server_side === "required") {
+		return "Client and server";
+	}
+	if (client_side === "optional" && server_side === "optional") {
+		return "Client or server";
+	}
+	if (client_side === "required") {
+		return "Client";
+	}
+	if (server_side === "required") {
+		return "Server";
+	}
+	return undefined;
+}
+
+function sideIcon(
+	client_side: "required" | "optional" | "unsupported" | "unknown",
+	server_side: "required" | "optional" | "unsupported" | "unknown",
+	className?: string,
+) {
+	if (client_side === "required" && server_side === "required") {
+		return <Globe className={className} />;
+	}
+	if (client_side === "optional" && server_side === "optional") {
+		return <Globe className={className} />;
+	}
+	if (client_side === "required") {
+		return <Monitor className={className} />;
+	}
+	if (server_side === "required") {
+		return <HardDrive className={className} />;
+	}
+	return undefined;
 }

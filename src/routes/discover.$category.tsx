@@ -90,7 +90,7 @@ function RouteComponent() {
 					) : (
 						<div className="flex flex-col gap-1">
 							{projects?.map((project) => {
-								return ProjectCard(project);
+								return ProjectCard(project, category);
 							})}
 							<Paginator category={category} page={page} />
 						</div>

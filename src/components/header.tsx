@@ -7,7 +7,7 @@ const pages = [
 	{ name: "Data Packs", slug: "datapack" },
 	{ name: "Shaders", slug: "shader" },
 	{ name: "Modpacks", slug: "modpack" },
-	{ name: "Plugin", slug: "plugin" },
+	{ name: "Plugins", slug: "plugin" },
 ];
 
 export function Header() {
