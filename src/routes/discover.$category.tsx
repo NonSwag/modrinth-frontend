@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { CategorySelector } from "@/components/category-selector";
 import { Header } from "@/components/header";
 import { ProjectCard } from "@/components/project-card";
-import { SearchOptions } from "@/components/search-options";
+import { Paginator, SearchOptions } from "@/components/search-options";
 import {
 	InputGroup,
 	InputGroupAddon,
@@ -92,7 +92,7 @@ function RouteComponent() {
 							{projects?.map((project) => {
 								return ProjectCard(project);
 							})}
-							<SearchOptions />
+							<Paginator category={category} page={page} />
 						</div>
 					)}
 				</div>

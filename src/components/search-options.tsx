@@ -78,8 +78,10 @@ export function SearchOptions() {
 						</SelectTrigger>
 						<SelectContent align="start">
 							<SelectGroup>
+								<SelectItem value="5">5</SelectItem>
 								<SelectItem value="10">10</SelectItem>
-								<SelectItem value="25">25</SelectItem>
+								<SelectItem value="15">15</SelectItem>
+								<SelectItem value="20">20</SelectItem>
 								<SelectItem value="50">50</SelectItem>
 								<SelectItem value="100">100</SelectItem>
 							</SelectGroup>
@@ -88,41 +90,52 @@ export function SearchOptions() {
 				</Field>
 			</div>
 			<div>
-				<Pagination className="w-auto mx-0">
-					<PaginationContent>
-						<PaginationItem>
-							<PaginationPrevious
-								to="/discover/$category"
-								params={{
-									category: category,
-								}}
-								search={(previous) => ({
-									...previous,
-									page:
-										previous.page && previous.page > 1 ? previous.page - 1 : 1,
-								})}
-							/>
-						</PaginationItem>
-						{fillPaginationItems(category, page || 1)}
-						<PaginationItem>
-							<PaginationEllipsis />
-						</PaginationItem>
-						<PaginationItem>
-							<PaginationNext
-								to="/discover/$category"
-								params={{
-									category: category,
-								}}
-								search={(previous) => ({
-									...previous,
-									page: previous.page ? previous.page + 1 : 2,
-								})}
-							/>
-						</PaginationItem>
-					</PaginationContent>
-				</Pagination>
+				<Paginator category={category} page={page} />
 			</div>
 		</div>
+	);
+}
+
+export function Paginator({
+	category,
+	page,
+}: {
+	category: string;
+	page?: number;
+}) {
+	return (
+		<Pagination className="w-auto mx-0 justify-end">
+			<PaginationContent>
+				<PaginationItem>
+					<PaginationPrevious
+						to="/discover/$category"
+						params={{
+							category: category,
+						}}
+						search={(previous) => ({
+							...previous,
+							page: previous.page && previous.page > 1 ? previous.page - 1 : 1,
+						})}
+					/>
+				</PaginationItem>
+				{fillPaginationItems(category, page || 1)}
+				<PaginationItem>
+					<PaginationEllipsis />
+				</PaginationItem>
+				<PaginationItem>
+					<PaginationNext
+						to="/discover/$category"
+						params={{
+							category: category,
+						}}
+						search={(previous) => ({
+							...previous,
+							page: previous.page ? previous.page + 1 : 2,
+						})}
+					/>
+				</PaginationItem>
+			</PaginationContent>
+		</Pagination>
 	);
 }
 
